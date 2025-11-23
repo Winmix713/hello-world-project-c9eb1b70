@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { ChatMessage, AIChatResponse } from '../../types/ai-chat';
 import { supabase } from '../../integrations/supabase/client';
 import MessageBubble from './MessageBubble';
@@ -67,7 +67,10 @@ export const AIChatInterface: React.FC<AIChatInterfaceProps> = ({
             teams: response.analysis?.teams,
             league: response.analysis?.league,
             patterns: response.analysis?.patterns,
-            prediction: response.analysis?.prediction,
+            prediction: response.analysis?.prediction ? {
+              ...response.analysis.prediction,
+              keyFactors: []
+            } : undefined,
           }
         };
 
