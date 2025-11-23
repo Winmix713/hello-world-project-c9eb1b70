@@ -1,0 +1,1 @@
+export type PerformancePoint = { x: number | string; y: number };
