@@ -22,14 +22,10 @@ import FeatureFlagsDemo from '@/pages/FeatureFlagsDemo';
 const TeamDetail = React.lazy(() => import('@/pages/TeamDetail'));
 const CrossLeague = React.lazy(() => import('@/pages/CrossLeague'));
 const Analytics = React.lazy(() => import('@/pages/Analytics'));
-const Models = React.lazy(() => import('@/pages/Models'));
 const Monitoring = React.lazy(() => import('@/pages/Monitoring'));
-const EnvVariables = React.lazy(() => import('@/pages/EnvVariables'));
 const MatchesPage = React.lazy(() => import('@/pages/MatchesPage'));
 const MatchDetail = React.lazy(() => import('@/pages/MatchDetail'));
 const ScheduledJobsPage = React.lazy(() => import('@/pages/ScheduledJobsPage'));
-const ModelsPage = React.lazy(() => import('@/pages/ModelsPage'));
-const MonitoringPage = React.lazy(() => import('@/pages/MonitoringPage'));
 const AIChat = React.lazy(() => import('@/pages/AIChat'));
 
 // Lazy load admin components
