@@ -84,7 +84,7 @@ export const healthCheck = async (): Promise<ComponentHealth> => {
   ]);
 
   return {
-    dbConnectionStatus: db.dbConnectionStatus ?? "unknown",
+    dbConnectionStatus: (db.dbConnectionStatus ?? "offline") as "healthy" | "degraded" | "offline",
     dbResponseTime: db.dbResponseTime ?? 0,
     dbConnectionCount: db.dbConnectionCount,
     dbQueryQueueLength: db.dbQueryQueueLength,
