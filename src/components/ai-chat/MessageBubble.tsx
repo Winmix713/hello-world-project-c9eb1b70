@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ChatMessage } from '../../types/ai-chat';
-import { AlertCircle, CheckCircle2, TrendingUp } from 'lucide-react';
+import { CheckCircle2, TrendingUp } from 'lucide-react';
 
 interface MessageBubbleProps {
   message: ChatMessage;
