@@ -19,10 +19,11 @@ import { UserPredictionForm } from './collaborative-intelligence';
 import { CrowdWisdomDisplay } from './CrowdWisdomDisplay';
 import { MarketOddsDisplay } from './market-integration';
 import { ValueBetHighlights } from './market-integration';
-import { TemporalDecayDashboard } from './temporal-decay';
-import { FreshnessIndicator } from './temporal-decay';
-import { ExperimentDashboard } from './self-improving-system';
-import { FeatureGenerationWizard } from './self-improving-system';
+// NOTE: Temporal decay and self-improving system components removed until database tables are created
+// import { TemporalDecayDashboard } from './temporal-decay';
+// import { FreshnessIndicator } from './temporal-decay';
+// import { ExperimentDashboard } from './self-improving-system';
+// import { FeatureGenerationWizard } from './self-improving-system';
 import { SystemStatusCard } from './SystemStatusCard';
 import { QuickActionCard } from './QuickActionCard';
 import { HealthMetric } from './HealthMetric';
