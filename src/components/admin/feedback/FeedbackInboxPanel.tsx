@@ -32,7 +32,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -79,10 +78,10 @@ const FeedbackInboxPanel = () => {
   const [isPredictionDialogOpen, setIsPredictionDialogOpen] = useState(false);
 
   const { data: feedback, isLoading, error } = useQuery({
-    queryKey: ["admin", "feedback"],
+    queryKey: ["admin", "feedback_inbox"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("feedback")
+        .from("feedback_inbox")
         .select(`
           *,
           user_profiles(email, full_name),
@@ -109,7 +108,7 @@ const FeedbackInboxPanel = () => {
   const resolveMutation = useMutation({
     mutationFn: async ({ feedbackId, resolved }: { feedbackId: string; resolved: boolean }) => {
       const { error } = await supabase
-        .from("feedback")
+        .from("feedback_inbox")
         .update({ resolved })
         .eq("id", feedbackId);
 
@@ -123,7 +122,7 @@ const FeedbackInboxPanel = () => {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin", "feedback"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "feedback_inbox"] });
       toast.success(`Feedback ${resolveMutation.variables?.resolved ? "resolved" : "reopened"} successfully`);
     },
     onError: (error) => {
