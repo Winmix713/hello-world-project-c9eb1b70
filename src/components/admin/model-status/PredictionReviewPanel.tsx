@@ -65,7 +65,7 @@ export function PredictionReviewPanel({
 
   const reviewMutation = useMutation({
     mutationFn: submitPredictionReview,
-    onSuccess: (_data, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["blocked-predictions"] });
       const action = variables.action === "accepted" ? "elfogadva" : "elutasítva";
       toast({

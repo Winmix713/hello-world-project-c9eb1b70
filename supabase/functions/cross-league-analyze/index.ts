@@ -12,6 +12,23 @@ type MetricsKey = "goals" | "home_adv" | "balance" | "predictability" | "physica
 function mean(values: number[]): number { return values.length ? values.reduce((a,b)=>a+b,0)/values.length : 0; }
 function clamp01(x: number) { return Math.max(0, Math.min(1, x)); }
 
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  // Check Phase 7 feature flag
+  const phase7Enabled = Deno.env.get('PHASE7_ENABLED') === 'true';
+  if (!phase7Enabled) {
+    return new Response(
+      JSON.stringify({ 
+        error: 'Feature disabled',
+        message: 'Phase 7 cross-league intelligence is currently disabled'
+      }),
+      { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
 async function computeLeagueMetrics(supabase: SupabaseClient<unknown>, leagueId: string) {
   const { data: matches, error } = await supabase
     .from("matches")

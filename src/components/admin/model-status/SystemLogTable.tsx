@@ -27,12 +27,7 @@ const fetchSystemLogs = async (): Promise<SystemLog[]> => {
     throw new Error(error.message);
   }
 
-  const formattedLogs: SystemLog[] = (data || []).map((log) => ({
-    ...log,
-    status: "info" as const,
-  }));
-
-  return formattedLogs;
+  return data || [];
 };
 
 const getStatusIcon = (status: string) => {
