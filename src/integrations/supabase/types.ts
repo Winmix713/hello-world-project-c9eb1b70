@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_settings: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      auto_reinforcement_model_retraining: {
+        Row: {
+          completed_at: string | null
+          error_message: string | null
+          id: string
+          model_version_after: string | null
+          model_version_before: string
+          started_at: string
+          status: string | null
+          training_metrics: Json | null
+          trigger_reason: string
+        }
+        Insert: {
+          completed_at?: string | null
+          error_message?: string | null
+          id?: string
+          model_version_after?: string | null
+          model_version_before: string
+          started_at?: string
+          status?: string | null
+          training_metrics?: Json | null
+          trigger_reason: string
+        }
+        Update: {
+          completed_at?: string | null
+          error_message?: string | null
+          id?: string
+          model_version_after?: string | null
+          model_version_before?: string
+          started_at?: string
+          status?: string | null
+          training_metrics?: Json | null
+          trigger_reason?: string
+        }
+        Relationships: []
+      }
       detected_patterns: {
         Row: {
           confidence_contribution: number
@@ -58,6 +121,83 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ensemble_predictor_runs: {
+        Row: {
+          confidence_score: number
+          created_at: string
+          ensemble_prediction: Json
+          id: string
+          match_id: string | null
+          model_weights: Json
+        }
+        Insert: {
+          confidence_score: number
+          created_at?: string
+          ensemble_prediction: Json
+          id?: string
+          match_id?: string | null
+          model_weights: Json
+        }
+        Update: {
+          confidence_score?: number
+          created_at?: string
+          ensemble_prediction?: Json
+          id?: string
+          match_id?: string | null
+          model_weights?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ensemble_predictor_runs_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback_inbox: {
+        Row: {
+          created_at: string
+          feedback_type: string
+          id: string
+          message: string
+          priority: string | null
+          responded_at: string | null
+          responded_by: string | null
+          response: string | null
+          status: string | null
+          subject: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          feedback_type: string
+          id?: string
+          message: string
+          priority?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          response?: string | null
+          status?: string | null
+          subject: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          feedback_type?: string
+          id?: string
+          message?: string
+          priority?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          response?: string | null
+          status?: string | null
+          subject?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       job_execution_logs: {
         Row: {
@@ -239,6 +379,44 @@ export type Database = {
         }
         Relationships: []
       }
+      model_override_log: {
+        Row: {
+          id: string
+          original_prediction: Json
+          overridden_at: string
+          overridden_by: string
+          override_prediction: Json
+          override_reason: string
+          prediction_id: string | null
+        }
+        Insert: {
+          id?: string
+          original_prediction: Json
+          overridden_at?: string
+          overridden_by: string
+          override_prediction: Json
+          override_reason: string
+          prediction_id?: string | null
+        }
+        Update: {
+          id?: string
+          original_prediction?: Json
+          overridden_at?: string
+          overridden_by?: string
+          override_prediction?: Json
+          override_reason?: string
+          prediction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "model_override_log_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       model_performance: {
         Row: {
           accuracy_btts: number | null
@@ -346,6 +524,74 @@ export type Database = {
         }
         Relationships: []
       }
+      prediction_decay_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          alert_level: string
+          created_at: string
+          decay_rate: number
+          id: string
+          message: string
+          model_version: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_level: string
+          created_at?: string
+          decay_rate: number
+          id?: string
+          message: string
+          model_version: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_level?: string
+          created_at?: string
+          decay_rate?: number
+          id?: string
+          message?: string
+          model_version?: string
+        }
+        Relationships: []
+      }
+      prediction_review_log: {
+        Row: {
+          id: string
+          prediction_id: string | null
+          review_action: string
+          review_notes: string | null
+          reviewed_at: string
+          reviewer_id: string
+        }
+        Insert: {
+          id?: string
+          prediction_id?: string | null
+          review_action: string
+          review_notes?: string | null
+          reviewed_at?: string
+          reviewer_id: string
+        }
+        Update: {
+          id?: string
+          prediction_id?: string | null
+          review_action?: string
+          review_notes?: string | null
+          reviewed_at?: string
+          reviewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prediction_review_log_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       predictions: {
         Row: {
           actual_outcome: string | null
@@ -444,6 +690,39 @@ export type Database = {
           },
         ]
       }
+      retrain_suggestion_log: {
+        Row: {
+          accuracy_threshold: number
+          action_taken: string | null
+          actioned_at: string | null
+          current_accuracy: number
+          id: string
+          model_version: string
+          suggested_at: string
+          suggestion_reason: string
+        }
+        Insert: {
+          accuracy_threshold: number
+          action_taken?: string | null
+          actioned_at?: string | null
+          current_accuracy: number
+          id?: string
+          model_version: string
+          suggested_at?: string
+          suggestion_reason: string
+        }
+        Update: {
+          accuracy_threshold?: number
+          action_taken?: string | null
+          actioned_at?: string | null
+          current_accuracy?: number
+          id?: string
+          model_version?: string
+          suggested_at?: string
+          suggestion_reason?: string
+        }
+        Relationships: []
+      }
       scheduled_jobs: {
         Row: {
           config: Json | null
@@ -483,6 +762,110 @@ export type Database = {
         }
         Relationships: []
       }
+      system_health_metrics: {
+        Row: {
+          id: string
+          metadata: Json | null
+          metric_name: string
+          metric_unit: string | null
+          metric_value: number
+          recorded_at: string
+          status: string | null
+          threshold_critical: number | null
+          threshold_warning: number | null
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          metric_unit?: string | null
+          metric_value: number
+          recorded_at?: string
+          status?: string | null
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          metric_unit?: string | null
+          metric_value?: number
+          recorded_at?: string
+          status?: string | null
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+        }
+        Relationships: []
+      }
+      system_logs: {
+        Row: {
+          component: string
+          created_at: string
+          details: Json | null
+          id: string
+          log_level: string
+          message: string
+          user_id: string | null
+        }
+        Insert: {
+          component: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          log_level: string
+          message: string
+          user_id?: string | null
+        }
+        Update: {
+          component?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          log_level?: string
+          message?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      team_patterns: {
+        Row: {
+          confidence_score: number
+          created_by: string | null
+          detected_at: string
+          id: string
+          pattern_data: Json
+          pattern_type: string
+          team_id: string | null
+        }
+        Insert: {
+          confidence_score: number
+          created_by?: string | null
+          detected_at?: string
+          id?: string
+          pattern_data: Json
+          pattern_type: string
+          team_id?: string | null
+        }
+        Update: {
+          confidence_score?: number
+          created_by?: string | null
+          detected_at?: string
+          id?: string
+          pattern_data?: Json
+          pattern_type?: string
+          team_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_patterns_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teams: {
         Row: {
           created_at: string | null
@@ -512,6 +895,77 @@ export type Database = {
           },
         ]
       }
+      user_predictions: {
+        Row: {
+          confidence_score: number
+          created_at: string
+          created_by: string | null
+          id: string
+          match_id: string | null
+          predicted_outcome: string
+          reasoning: string | null
+          user_id: string
+        }
+        Insert: {
+          confidence_score: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          match_id?: string | null
+          predicted_outcome: string
+          reasoning?: string | null
+          user_id: string
+        }
+        Update: {
+          confidence_score?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          match_id?: string | null
+          predicted_outcome?: string
+          reasoning?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_predictions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -521,9 +975,22 @@ export type Database = {
         Args: { p_adjustment: number; p_template_id: string }
         Returns: undefined
       }
+      current_app_role: { Args: never; Returns: string }
+      is_admin: { Args: never; Returns: boolean }
+      is_analyst: { Args: never; Returns: boolean }
+      is_service_role: { Args: never; Returns: boolean }
+      verify_rls_all_tables: {
+        Args: never
+        Returns: {
+          policy_count: number
+          rls_enabled: boolean
+          rls_forced: boolean
+          table_name: string
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "analyst" | "viewer" | "demo" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -650,6 +1117,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "analyst", "viewer", "demo", "user"],
+    },
   },
 } as const
