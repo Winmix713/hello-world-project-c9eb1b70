@@ -42,7 +42,7 @@ const IntegrationsPage = React.lazy(() => import('@/pages/admin/IntegrationsPage
 const StatsPage = React.lazy(() => import('@/pages/admin/StatsPage'));
 const ModelStatusDashboard = React.lazy(() => import('@/pages/admin/ModelStatusDashboard'));
 const FeedbackInboxPage = React.lazy(() => import('@/pages/admin/FeedbackInboxPage'));
-const PredictionReviewPage = React.lazy(() => import('@/pages/admin/PredictionReviewPage'));
+// const PredictionReviewPage = React.lazy(() => import('@/pages/admin/PredictionReviewPage'));
 
 // Import admin components when needed
 import RoleGate from '@/components/admin/RoleGate';
