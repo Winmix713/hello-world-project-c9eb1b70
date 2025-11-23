@@ -74,14 +74,11 @@ const FeedbackInboxPanel = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("feedback_inbox")
-        .select(`
-          *,
-          user_profiles(email, full_name)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as FeedbackWithDetails[];
+      return data as unknown as FeedbackWithDetails[];
     },
     enabled: !!profile,
   });

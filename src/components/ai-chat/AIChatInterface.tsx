@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { ChatMessage, AIChatResponse } from '../../types/ai-chat';
 import { supabase } from '../../integrations/supabase/client';
 import MessageBubble from './MessageBubble';
