@@ -33,7 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface FeedbackWithDetails {
+interface FeedbackItem {
   id: string;
   subject: string;
   message: string;
@@ -79,7 +79,7 @@ const FeedbackInboxPanel = () => {
 
       if (error) throw error;
 
-      await logAudit("admin_action", {
+      await logAudit("settings_changed", {
         action: "feedback_status_changed",
         feedback_id: feedbackId,
         new_status: status,
@@ -125,7 +125,8 @@ const FeedbackInboxPanel = () => {
     link.click();
     document.body.removeChild(link);
 
-    await logAudit("feedback_exported", {
+    await logAudit("settings_changed", {
+      action: "feedback_exported",
       export_count: feedback.length,
       admin_email: profile?.email,
     });
