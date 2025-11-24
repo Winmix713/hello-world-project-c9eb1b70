@@ -77,6 +77,62 @@ export type Database = {
         }
         Relationships: []
       }
+      crowd_wisdom: {
+        Row: {
+          average_confidence: number
+          away_win_predictions: number
+          consensus_confidence: number
+          consensus_prediction: string | null
+          created_at: string
+          draw_predictions: number
+          home_win_predictions: number
+          id: string
+          last_calculated_at: string
+          match_id: string | null
+          model_vs_crowd_divergence: number
+          total_predictions: number
+          updated_at: string
+        }
+        Insert: {
+          average_confidence?: number
+          away_win_predictions?: number
+          consensus_confidence?: number
+          consensus_prediction?: string | null
+          created_at?: string
+          draw_predictions?: number
+          home_win_predictions?: number
+          id?: string
+          last_calculated_at?: string
+          match_id?: string | null
+          model_vs_crowd_divergence?: number
+          total_predictions?: number
+          updated_at?: string
+        }
+        Update: {
+          average_confidence?: number
+          away_win_predictions?: number
+          consensus_confidence?: number
+          consensus_prediction?: string | null
+          created_at?: string
+          draw_predictions?: number
+          home_win_predictions?: number
+          id?: string
+          last_calculated_at?: string
+          match_id?: string | null
+          model_vs_crowd_divergence?: number
+          total_predictions?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crowd_wisdom_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       detected_patterns: {
         Row: {
           confidence_contribution: number
@@ -157,6 +213,69 @@ export type Database = {
           },
         ]
       }
+      feature_experiments: {
+        Row: {
+          base_features: Json
+          control_accuracy: number | null
+          created_at: string
+          experiment_name: string
+          feature_expression: string
+          feature_type: string
+          generated_feature: Json
+          id: string
+          improvement_delta: number | null
+          is_active: boolean
+          is_approved: boolean
+          p_value: number | null
+          sample_size: number
+          statistical_significance: boolean
+          test_accuracy: number | null
+          test_end_date: string | null
+          test_start_date: string
+          updated_at: string
+        }
+        Insert: {
+          base_features?: Json
+          control_accuracy?: number | null
+          created_at?: string
+          experiment_name: string
+          feature_expression: string
+          feature_type: string
+          generated_feature?: Json
+          id?: string
+          improvement_delta?: number | null
+          is_active?: boolean
+          is_approved?: boolean
+          p_value?: number | null
+          sample_size?: number
+          statistical_significance?: boolean
+          test_accuracy?: number | null
+          test_end_date?: string | null
+          test_start_date?: string
+          updated_at?: string
+        }
+        Update: {
+          base_features?: Json
+          control_accuracy?: number | null
+          created_at?: string
+          experiment_name?: string
+          feature_expression?: string
+          feature_type?: string
+          generated_feature?: Json
+          id?: string
+          improvement_delta?: number | null
+          is_active?: boolean
+          is_approved?: boolean
+          p_value?: number | null
+          sample_size?: number
+          statistical_significance?: boolean
+          test_accuracy?: number | null
+          test_end_date?: string | null
+          test_start_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       feedback_inbox: {
         Row: {
           created_at: string
@@ -196,6 +315,48 @@ export type Database = {
           status?: string | null
           subject?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      information_freshness: {
+        Row: {
+          created_at: string
+          data_type: string
+          decay_rate: number
+          freshness_score: number
+          id: string
+          is_stale: boolean
+          last_updated: string
+          record_id: string
+          stale_threshold_days: number
+          table_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_type: string
+          decay_rate?: number
+          freshness_score?: number
+          id?: string
+          is_stale?: boolean
+          last_updated?: string
+          record_id: string
+          stale_threshold_days?: number
+          table_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_type?: string
+          decay_rate?: number
+          freshness_score?: number
+          id?: string
+          is_stale?: boolean
+          last_updated?: string
+          record_id?: string
+          stale_threshold_days?: number
+          table_name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -278,6 +439,68 @@ export type Database = {
           season?: string
         }
         Relationships: []
+      }
+      market_odds: {
+        Row: {
+          api_source: string
+          away_win_odds: number
+          bookmaker: string
+          btts_no_odds: number | null
+          btts_yes_odds: number | null
+          created_at: string
+          draw_odds: number
+          home_win_odds: number
+          id: string
+          last_updated: string
+          match_id: string | null
+          over_2_5_odds: number | null
+          raw_response: Json | null
+          under_2_5_odds: number | null
+          updated_at: string
+        }
+        Insert: {
+          api_source: string
+          away_win_odds: number
+          bookmaker: string
+          btts_no_odds?: number | null
+          btts_yes_odds?: number | null
+          created_at?: string
+          draw_odds: number
+          home_win_odds: number
+          id?: string
+          last_updated?: string
+          match_id?: string | null
+          over_2_5_odds?: number | null
+          raw_response?: Json | null
+          under_2_5_odds?: number | null
+          updated_at?: string
+        }
+        Update: {
+          api_source?: string
+          away_win_odds?: number
+          bookmaker?: string
+          btts_no_odds?: number | null
+          btts_yes_odds?: number | null
+          created_at?: string
+          draw_odds?: number
+          home_win_odds?: number
+          id?: string
+          last_updated?: string
+          match_id?: string | null
+          over_2_5_odds?: number | null
+          raw_response?: Json | null
+          under_2_5_odds?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_odds_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       matches: {
         Row: {
@@ -521,6 +744,51 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           name?: string
+        }
+        Relationships: []
+      }
+      phase9_settings: {
+        Row: {
+          collaborative_intelligence_enabled: boolean
+          cross_league_depth: string
+          cross_league_enabled: boolean
+          cross_league_league_count: number
+          freshness_check_seconds: number
+          id: number
+          market_api_key: string | null
+          market_integration_mode: string
+          staleness_threshold_days: number
+          temporal_decay_enabled: boolean
+          temporal_decay_rate: number
+          updated_at: string
+        }
+        Insert: {
+          collaborative_intelligence_enabled?: boolean
+          cross_league_depth?: string
+          cross_league_enabled?: boolean
+          cross_league_league_count?: number
+          freshness_check_seconds?: number
+          id?: number
+          market_api_key?: string | null
+          market_integration_mode?: string
+          staleness_threshold_days?: number
+          temporal_decay_enabled?: boolean
+          temporal_decay_rate?: number
+          updated_at?: string
+        }
+        Update: {
+          collaborative_intelligence_enabled?: boolean
+          cross_league_depth?: string
+          cross_league_enabled?: boolean
+          cross_league_league_count?: number
+          freshness_check_seconds?: number
+          id?: number
+          market_api_key?: string | null
+          market_integration_mode?: string
+          staleness_threshold_days?: number
+          temporal_decay_enabled?: boolean
+          temporal_decay_rate?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -965,6 +1233,62 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      value_bets: {
+        Row: {
+          bet_type: string
+          bookmaker: string
+          bookmaker_odds: number
+          confidence_level: string
+          created_at: string
+          expected_value: number
+          id: string
+          implied_probability: number
+          is_active: boolean
+          kelly_fraction: number
+          match_id: string | null
+          model_probability: number
+          updated_at: string
+        }
+        Insert: {
+          bet_type: string
+          bookmaker: string
+          bookmaker_odds: number
+          confidence_level?: string
+          created_at?: string
+          expected_value: number
+          id?: string
+          implied_probability: number
+          is_active?: boolean
+          kelly_fraction: number
+          match_id?: string | null
+          model_probability: number
+          updated_at?: string
+        }
+        Update: {
+          bet_type?: string
+          bookmaker?: string
+          bookmaker_odds?: number
+          confidence_level?: string
+          created_at?: string
+          expected_value?: number
+          id?: string
+          implied_probability?: number
+          is_active?: boolean
+          kelly_fraction?: number
+          match_id?: string | null
+          model_probability?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "value_bets_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
