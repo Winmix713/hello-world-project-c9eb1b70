@@ -14,73 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_settings: {
+      admin_audit_log: {
         Row: {
-          created_at: string
-          description: string | null
           id: string
-          setting_key: string
-          setting_value: Json
-          updated_at: string
+          user_id: string
+          action: string
+          details: Json
+          created_at: string
+          ip_address: string | null
         }
         Insert: {
-          created_at?: string
-          description?: string | null
           id?: string
-          setting_key: string
-          setting_value?: Json
-          updated_at?: string
+          user_id: string
+          action: string
+          details?: Json
+          created_at?: string
+          ip_address?: string | null
         }
         Update: {
-          created_at?: string
-          description?: string | null
           id?: string
-          setting_key?: string
-          setting_value?: Json
-          updated_at?: string
+          user_id?: string
+          action?: string
+          details?: Json
+          created_at?: string
+          ip_address?: string | null
         }
         Relationships: []
       }
-      auto_reinforcement_model_retraining: {
+      admin_invites: {
         Row: {
-          completed_at: string | null
-          error_message: string | null
           id: string
-          model_version_after: string | null
-          model_version_before: string
-          started_at: string
-          status: string | null
-          training_metrics: Json | null
-          trigger_reason: string
+          email: string
+          role: string
+          token: string
+          status: string
+          created_at: string | null
         }
         Insert: {
-          completed_at?: string | null
-          error_message?: string | null
           id?: string
-          model_version_after?: string | null
-          model_version_before: string
-          started_at?: string
-          status?: string | null
-          training_metrics?: Json | null
-          trigger_reason: string
+          email: string
+          role: string
+          token: string
+          status?: string
+          created_at?: string | null
         }
         Update: {
-          completed_at?: string | null
-          error_message?: string | null
           id?: string
-          model_version_after?: string | null
-          model_version_before?: string
-          started_at?: string
-          status?: string | null
-          training_metrics?: Json | null
-          trigger_reason?: string
+          email?: string
+          role?: string
+          token?: string
+          status?: string
+          created_at?: string | null
         }
         Relationships: []
       }
       detected_patterns: {
         Row: {
           confidence_contribution: number
-          created_by: string | null
           detected_at: string | null
           id: string
           match_id: string | null
@@ -89,7 +79,6 @@ export type Database = {
         }
         Insert: {
           confidence_contribution: number
-          created_by?: string | null
           detected_at?: string | null
           id?: string
           match_id?: string | null
@@ -98,7 +87,6 @@ export type Database = {
         }
         Update: {
           confidence_contribution?: number
-          created_by?: string | null
           detected_at?: string | null
           id?: string
           match_id?: string | null
@@ -118,130 +106,6 @@ export type Database = {
             columns: ["template_id"]
             isOneToOne: false
             referencedRelation: "pattern_templates"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      ensemble_predictor_runs: {
-        Row: {
-          confidence_score: number
-          created_at: string
-          ensemble_prediction: Json
-          id: string
-          match_id: string | null
-          model_weights: Json
-        }
-        Insert: {
-          confidence_score: number
-          created_at?: string
-          ensemble_prediction: Json
-          id?: string
-          match_id?: string | null
-          model_weights: Json
-        }
-        Update: {
-          confidence_score?: number
-          created_at?: string
-          ensemble_prediction?: Json
-          id?: string
-          match_id?: string | null
-          model_weights?: Json
-        }
-        Relationships: [
-          {
-            foreignKeyName: "ensemble_predictor_runs_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "matches"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      feedback_inbox: {
-        Row: {
-          created_at: string
-          feedback_type: string
-          id: string
-          message: string
-          priority: string | null
-          responded_at: string | null
-          responded_by: string | null
-          response: string | null
-          status: string | null
-          subject: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          feedback_type: string
-          id?: string
-          message: string
-          priority?: string | null
-          responded_at?: string | null
-          responded_by?: string | null
-          response?: string | null
-          status?: string | null
-          subject: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          feedback_type?: string
-          id?: string
-          message?: string
-          priority?: string | null
-          responded_at?: string | null
-          responded_by?: string | null
-          response?: string | null
-          status?: string | null
-          subject?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      job_execution_logs: {
-        Row: {
-          completed_at: string | null
-          created_at: string | null
-          duration_ms: number | null
-          error_message: string | null
-          error_stack: string | null
-          id: string
-          job_id: string
-          records_processed: number | null
-          started_at: string | null
-          status: string
-        }
-        Insert: {
-          completed_at?: string | null
-          created_at?: string | null
-          duration_ms?: number | null
-          error_message?: string | null
-          error_stack?: string | null
-          id?: string
-          job_id: string
-          records_processed?: number | null
-          started_at?: string | null
-          status: string
-        }
-        Update: {
-          completed_at?: string | null
-          created_at?: string | null
-          duration_ms?: number | null
-          error_message?: string | null
-          error_stack?: string | null
-          id?: string
-          job_id?: string
-          records_processed?: number | null
-          started_at?: string | null
-          status?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "job_execution_logs_job_id_fkey"
-            columns: ["job_id"]
-            isOneToOne: false
-            referencedRelation: "scheduled_jobs"
             referencedColumns: ["id"]
           },
         ]
@@ -343,119 +207,48 @@ export type Database = {
           },
         ]
       }
-      model_comparison: {
+      phase9_settings: {
         Row: {
-          accuracy_diff: number | null
-          comparison_date: string | null
-          created_at: string | null
-          id: string
-          model_a_id: string
-          model_b_id: string
-          p_value: number | null
-          sample_size: number
-          winning_model: string | null
+          id: number
+          collaborative_intelligence_enabled: boolean
+          temporal_decay_enabled: boolean
+          temporal_decay_rate: number
+          freshness_check_seconds: number
+          staleness_threshold_days: number
+          market_integration_mode: string
+          market_api_key: string | null
+          cross_league_enabled: boolean
+          cross_league_league_count: number
+          cross_league_depth: string
+          updated_at: string
         }
         Insert: {
-          accuracy_diff?: number | null
-          comparison_date?: string | null
-          created_at?: string | null
-          id?: string
-          model_a_id: string
-          model_b_id: string
-          p_value?: number | null
-          sample_size?: number
-          winning_model?: string | null
+          id?: number
+          collaborative_intelligence_enabled?: boolean
+          temporal_decay_enabled?: boolean
+          temporal_decay_rate?: number
+          freshness_check_seconds?: number
+          staleness_threshold_days?: number
+          market_integration_mode?: string
+          market_api_key?: string | null
+          cross_league_enabled?: boolean
+          cross_league_league_count?: number
+          cross_league_depth?: string
+          updated_at?: string
         }
         Update: {
-          accuracy_diff?: number | null
-          comparison_date?: string | null
-          created_at?: string | null
-          id?: string
-          model_a_id?: string
-          model_b_id?: string
-          p_value?: number | null
-          sample_size?: number
-          winning_model?: string | null
-        }
-        Relationships: []
-      }
-      model_override_log: {
-        Row: {
-          id: string
-          original_prediction: Json
-          overridden_at: string
-          overridden_by: string
-          override_prediction: Json
-          override_reason: string
-          prediction_id: string | null
-        }
-        Insert: {
-          id?: string
-          original_prediction: Json
-          overridden_at?: string
-          overridden_by: string
-          override_prediction: Json
-          override_reason: string
-          prediction_id?: string | null
-        }
-        Update: {
-          id?: string
-          original_prediction?: Json
-          overridden_at?: string
-          overridden_by?: string
-          override_prediction?: Json
-          override_reason?: string
-          prediction_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "model_override_log_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      model_performance: {
-        Row: {
-          accuracy_btts: number | null
-          accuracy_overall: number | null
-          accuracy_winner: number | null
-          confidence_calibration_score: number | null
-          created_at: string | null
-          id: string
-          league_breakdown: Json | null
-          model_version: string
-          period_end: string
-          period_start: string
-          total_predictions: number
-        }
-        Insert: {
-          accuracy_btts?: number | null
-          accuracy_overall?: number | null
-          accuracy_winner?: number | null
-          confidence_calibration_score?: number | null
-          created_at?: string | null
-          id?: string
-          league_breakdown?: Json | null
-          model_version: string
-          period_end: string
-          period_start: string
-          total_predictions?: number
-        }
-        Update: {
-          accuracy_btts?: number | null
-          accuracy_overall?: number | null
-          accuracy_winner?: number | null
-          confidence_calibration_score?: number | null
-          created_at?: string | null
-          id?: string
-          league_breakdown?: Json | null
-          model_version?: string
-          period_end?: string
-          period_start?: string
-          total_predictions?: number
+          id?: number
+          collaborative_intelligence_enabled?: boolean
+          temporal_decay_enabled?: boolean
+          temporal_decay_rate?: number
+          freshness_check_seconds?: number
+          staleness_threshold_days?: number
+          market_integration_mode?: string
+          market_api_key?: string | null
+          cross_league_enabled?: boolean
+          cross_league_league_count?: number
+          cross_league_depth?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -524,161 +317,69 @@ export type Database = {
         }
         Relationships: []
       }
-      prediction_decay_alerts: {
-        Row: {
-          acknowledged_at: string | null
-          acknowledged_by: string | null
-          alert_level: string
-          created_at: string
-          decay_rate: number
-          id: string
-          message: string
-          model_version: string
-        }
-        Insert: {
-          acknowledged_at?: string | null
-          acknowledged_by?: string | null
-          alert_level: string
-          created_at?: string
-          decay_rate: number
-          id?: string
-          message: string
-          model_version: string
-        }
-        Update: {
-          acknowledged_at?: string | null
-          acknowledged_by?: string | null
-          alert_level?: string
-          created_at?: string
-          decay_rate?: number
-          id?: string
-          message?: string
-          model_version?: string
-        }
-        Relationships: []
-      }
-      prediction_review_log: {
-        Row: {
-          id: string
-          prediction_id: string | null
-          review_action: string
-          review_notes: string | null
-          reviewed_at: string
-          reviewer_id: string
-        }
-        Insert: {
-          id?: string
-          prediction_id?: string | null
-          review_action: string
-          review_notes?: string | null
-          reviewed_at?: string
-          reviewer_id: string
-        }
-        Update: {
-          id?: string
-          prediction_id?: string | null
-          review_action?: string
-          review_notes?: string | null
-          reviewed_at?: string
-          reviewer_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "prediction_review_log_prediction_id_fkey"
-            columns: ["prediction_id"]
-            isOneToOne: false
-            referencedRelation: "predictions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       predictions: {
         Row: {
           actual_outcome: string | null
-          alternate_outcome: string | null
-          blocked_at: string | null
-          blocked_reason: string | null
           btts_prediction: boolean | null
-          calibration_error: number | null
           confidence_score: number
-          created_at: string | null
           css_score: number | null
-          decision_path: Json | null
-          downgraded_from_confidence: number | null
-          ensemble_breakdown: Json | null
+          prediction_factors: Json | null
+          calibration_error: number | null
+          created_at: string | null
           evaluated_at: string | null
-          explanation: Json | null
           id: string
           match_id: string | null
-          model_version: string | null
           over_under_prediction: string | null
-          overconfidence_flag: boolean | null
           predicted_away_score: number | null
           predicted_home_score: number | null
           predicted_outcome: string
-          prediction_factors: Json | null
-          prediction_id: string | null
-          prediction_status: string | null
-          reviewed_by: string | null
           was_correct: boolean | null
+          model_id: string | null
+          model_name: string | null
+          model_version: string | null
+          is_shadow_mode: boolean | null
         }
         Insert: {
           actual_outcome?: string | null
-          alternate_outcome?: string | null
-          blocked_at?: string | null
-          blocked_reason?: string | null
           btts_prediction?: boolean | null
-          calibration_error?: number | null
           confidence_score: number
-          created_at?: string | null
           css_score?: number | null
-          decision_path?: Json | null
-          downgraded_from_confidence?: number | null
-          ensemble_breakdown?: Json | null
+          prediction_factors?: Json | null
+          calibration_error?: number | null
+          created_at?: string | null
           evaluated_at?: string | null
-          explanation?: Json | null
           id?: string
           match_id?: string | null
-          model_version?: string | null
           over_under_prediction?: string | null
-          overconfidence_flag?: boolean | null
           predicted_away_score?: number | null
           predicted_home_score?: number | null
           predicted_outcome: string
-          prediction_factors?: Json | null
-          prediction_id?: string | null
-          prediction_status?: string | null
-          reviewed_by?: string | null
           was_correct?: boolean | null
+          model_id?: string | null
+          model_name?: string | null
+          model_version?: string | null
+          is_shadow_mode?: boolean | null
         }
         Update: {
           actual_outcome?: string | null
-          alternate_outcome?: string | null
-          blocked_at?: string | null
-          blocked_reason?: string | null
           btts_prediction?: boolean | null
-          calibration_error?: number | null
           confidence_score?: number
-          created_at?: string | null
           css_score?: number | null
-          decision_path?: Json | null
-          downgraded_from_confidence?: number | null
-          ensemble_breakdown?: Json | null
+          prediction_factors?: Json | null
+          calibration_error?: number | null
+          created_at?: string | null
           evaluated_at?: string | null
-          explanation?: Json | null
           id?: string
           match_id?: string | null
-          model_version?: string | null
           over_under_prediction?: string | null
-          overconfidence_flag?: boolean | null
           predicted_away_score?: number | null
           predicted_home_score?: number | null
           predicted_outcome?: string
-          prediction_factors?: Json | null
-          prediction_id?: string | null
-          prediction_status?: string | null
-          reviewed_by?: string | null
           was_correct?: boolean | null
+          model_id?: string | null
+          model_name?: string | null
+          model_version?: string | null
+          is_shadow_mode?: boolean | null
         }
         Relationships: [
           {
@@ -690,178 +391,118 @@ export type Database = {
           },
         ]
       }
-      retrain_suggestion_log: {
+      model_performance: {
         Row: {
-          accuracy_threshold: number
-          action_taken: string | null
-          actioned_at: string | null
-          current_accuracy: number
           id: string
           model_version: string
-          suggested_at: string
-          suggestion_reason: string
+          period_start: string
+          period_end: string
+          total_predictions: number
+          accuracy_overall: number | null
+          accuracy_winner: number | null
+          accuracy_btts: number | null
+          confidence_calibration_score: number | null
+          league_breakdown: Json | null
+          created_at: string | null
         }
         Insert: {
-          accuracy_threshold: number
-          action_taken?: string | null
-          actioned_at?: string | null
-          current_accuracy: number
           id?: string
           model_version: string
-          suggested_at?: string
-          suggestion_reason: string
+          period_start: string
+          period_end: string
+          total_predictions?: number
+          accuracy_overall?: number | null
+          accuracy_winner?: number | null
+          accuracy_btts?: number | null
+          confidence_calibration_score?: number | null
+          league_breakdown?: Json | null
+          created_at?: string | null
         }
         Update: {
-          accuracy_threshold?: number
-          action_taken?: string | null
-          actioned_at?: string | null
-          current_accuracy?: number
           id?: string
           model_version?: string
-          suggested_at?: string
-          suggestion_reason?: string
+          period_start?: string
+          period_end?: string
+          total_predictions?: number
+          accuracy_overall?: number | null
+          accuracy_winner?: number | null
+          accuracy_btts?: number | null
+          confidence_calibration_score?: number | null
+          league_breakdown?: Json | null
+          created_at?: string | null
         }
         Relationships: []
       }
-      scheduled_jobs: {
+      model_comparison: {
         Row: {
-          config: Json | null
+          id: string
+          model_a_id: string
+          model_b_id: string
+          comparison_date: string | null
+          accuracy_diff: number | null
+          p_value: number | null
+          winning_model: string | null
+          sample_size: number
           created_at: string | null
-          cron_schedule: string
-          enabled: boolean | null
-          id: string
-          job_name: string
-          job_type: string
-          last_run_at: string | null
-          next_run_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          config?: Json | null
-          created_at?: string | null
-          cron_schedule: string
-          enabled?: boolean | null
-          id?: string
-          job_name: string
-          job_type: string
-          last_run_at?: string | null
-          next_run_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          config?: Json | null
-          created_at?: string | null
-          cron_schedule?: string
-          enabled?: boolean | null
-          id?: string
-          job_name?: string
-          job_type?: string
-          last_run_at?: string | null
-          next_run_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      system_health_metrics: {
-        Row: {
-          id: string
-          metadata: Json | null
-          metric_name: string
-          metric_unit: string | null
-          metric_value: number
-          recorded_at: string
-          status: string | null
-          threshold_critical: number | null
-          threshold_warning: number | null
         }
         Insert: {
           id?: string
-          metadata?: Json | null
-          metric_name: string
-          metric_unit?: string | null
-          metric_value: number
-          recorded_at?: string
-          status?: string | null
-          threshold_critical?: number | null
-          threshold_warning?: number | null
+          model_a_id: string
+          model_b_id: string
+          comparison_date?: string | null
+          accuracy_diff?: number | null
+          p_value?: number | null
+          winning_model?: string | null
+          sample_size?: number
+          created_at?: string | null
         }
         Update: {
           id?: string
-          metadata?: Json | null
-          metric_name?: string
-          metric_unit?: string | null
-          metric_value?: number
-          recorded_at?: string
-          status?: string | null
-          threshold_critical?: number | null
-          threshold_warning?: number | null
+          model_a_id?: string
+          model_b_id?: string
+          comparison_date?: string | null
+          accuracy_diff?: number | null
+          p_value?: number | null
+          winning_model?: string | null
+          sample_size?: number
+          created_at?: string | null
         }
         Relationships: []
       }
-      system_logs: {
+      model_override_log: {
         Row: {
-          component: string
+          id: string
+          model_id: string | null
+          previous_state: Json
+          new_state: Json
+          reason: string | null
+          triggered_by: string
           created_at: string
-          details: Json | null
-          id: string
-          log_level: string
-          message: string
-          user_id: string | null
         }
         Insert: {
-          component: string
-          created_at?: string
-          details?: Json | null
           id?: string
-          log_level: string
-          message: string
-          user_id?: string | null
+          model_id?: string | null
+          previous_state: Json
+          new_state: Json
+          reason?: string | null
+          triggered_by: string
+          created_at?: string
         }
         Update: {
-          component?: string
+          id?: string
+          model_id?: string | null
+          previous_state?: Json
+          new_state?: Json
+          reason?: string | null
+          triggered_by?: string
           created_at?: string
-          details?: Json | null
-          id?: string
-          log_level?: string
-          message?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      team_patterns: {
-        Row: {
-          confidence_score: number
-          created_by: string | null
-          detected_at: string
-          id: string
-          pattern_data: Json
-          pattern_type: string
-          team_id: string | null
-        }
-        Insert: {
-          confidence_score: number
-          created_by?: string | null
-          detected_at?: string
-          id?: string
-          pattern_data: Json
-          pattern_type: string
-          team_id?: string | null
-        }
-        Update: {
-          confidence_score?: number
-          created_by?: string | null
-          detected_at?: string
-          id?: string
-          pattern_data?: Json
-          pattern_type?: string
-          team_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "team_patterns_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "model_override_log_model_id_fkey"
+            columns: ["model_id"]
             isOneToOne: false
-            referencedRelation: "teams"
+            referencedRelation: "model_registry"
             referencedColumns: ["id"]
           },
         ]
@@ -895,76 +536,240 @@ export type Database = {
           },
         ]
       }
-      user_predictions: {
+      pattern_definitions: {
         Row: {
-          confidence_score: number
-          created_at: string
-          created_by: string | null
           id: string
-          match_id: string | null
-          predicted_outcome: string
-          reasoning: string | null
-          user_id: string
+          pattern_name: string
+          detection_function: string
+          min_sample_size: number
+          min_confidence_threshold: number
+          priority: number
+          is_active: boolean
+          created_at: string | null
+          updated_at: string | null
         }
         Insert: {
-          confidence_score: number
-          created_at?: string
-          created_by?: string | null
           id?: string
-          match_id?: string | null
-          predicted_outcome: string
-          reasoning?: string | null
-          user_id: string
+          pattern_name: string
+          detection_function: string
+          min_sample_size?: number
+          min_confidence_threshold?: number
+          priority?: number
+          is_active?: boolean
+          created_at?: string | null
+          updated_at?: string | null
         }
         Update: {
-          confidence_score?: number
-          created_at?: string
-          created_by?: string | null
           id?: string
-          match_id?: string | null
-          predicted_outcome?: string
-          reasoning?: string | null
-          user_id?: string
+          pattern_name?: string
+          detection_function?: string
+          min_sample_size?: number
+          min_confidence_threshold?: number
+          priority?: number
+          is_active?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      team_patterns: {
+        Row: {
+          id: string
+          team_id: string
+          pattern_type: string
+          pattern_name: string
+          confidence: number
+          strength: number
+          valid_from: string
+          valid_until: string | null
+          prediction_impact: number
+          historical_accuracy: number
+          pattern_metadata: Json | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          team_id: string
+          pattern_type: string
+          pattern_name: string
+          confidence?: number
+          strength?: number
+          valid_from?: string
+          valid_until?: string | null
+          prediction_impact?: number
+          historical_accuracy?: number
+          pattern_metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          team_id?: string
+          pattern_type?: string
+          pattern_name?: string
+          confidence?: number
+          strength?: number
+          valid_from?: string
+          valid_until?: string | null
+          prediction_impact?: number
+          historical_accuracy?: number
+          pattern_metadata?: Json | null
+          created_at?: string | null
+          updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "user_predictions_match_id_fkey"
-            columns: ["match_id"]
+            foreignKeyName: "team_patterns_team_id_fkey"
+            columns: ["team_id"]
             isOneToOne: false
-            referencedRelation: "matches"
+            referencedRelation: "teams"
             referencedColumns: ["id"]
-          },
+          }
         ]
       }
       user_profiles: {
         Row: {
-          created_at: string
-          email: string | null
-          full_name: string | null
           id: string
-          role: Database["public"]["Enums"]["app_role"]
-          updated_at: string
-          user_id: string
+          email: string
+          full_name: string | null
+          role: "admin" | "analyst" | "user" | "viewer" | "demo"
+          created_at: string | null
+          updated_at: string | null
+          is_active: boolean
         }
         Insert: {
-          created_at?: string
-          email?: string | null
+          id: string
+          email: string
           full_name?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          updated_at?: string
-          user_id: string
+          role?: "admin" | "analyst" | "user" | "viewer" | "demo"
+          created_at?: string | null
+          updated_at?: string | null
+          is_active?: boolean
         }
         Update: {
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          updated_at?: string
-          user_id?: string
+          email?: string
+          full_name?: string | null
+          role?: "admin" | "analyst" | "user" | "viewer" | "demo"
+          created_at?: string | null
+          updated_at?: string | null
+          is_active?: boolean
         }
         Relationships: []
+      }
+      system_health_metrics: {
+        Row: {
+          id: string
+          timestamp: string | null
+          db_response_time: number | null
+          api_response_time: number | null
+          error_rate: number | null
+          active_users: number | null
+          memory_usage: number | null
+          cpu_usage: number | null
+          cache_hit_rate: number | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          timestamp?: string | null
+          db_response_time?: number | null
+          api_response_time?: number | null
+          error_rate?: number | null
+          active_users?: number | null
+          memory_usage?: number | null
+          cpu_usage?: number | null
+          cache_hit_rate?: number | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          timestamp?: string | null
+          db_response_time?: number | null
+          api_response_time?: number | null
+          error_rate?: number | null
+          active_users?: number | null
+          memory_usage?: number | null
+          cpu_usage?: number | null
+          cache_hit_rate?: number | null
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      system_logs: {
+        Row: {
+          id: string
+          component: string
+          status: "info" | "warning" | "error"
+          message: string | null
+          details: Json | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          component: string
+          status: "info" | "warning" | "error"
+          message?: string | null
+          details?: Json | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          component?: string
+          status?: "info" | "warning" | "error"
+          message?: string | null
+          details?: Json | null
+          created_at?: string | null
+        }
+        Relationships: []
+      feedback: {
+        Row: {
+          id: string
+          prediction_id: string
+          user_suggestion: string
+          submitted_by: string | null
+          metadata: Json | null
+          resolved: boolean
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          prediction_id: string
+          user_suggestion: string
+          submitted_by?: string | null
+          metadata?: Json | null
+          resolved?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          prediction_id?: string
+          user_suggestion?: string
+          submitted_by?: string | null
+          metadata?: Json | null
+          resolved?: boolean
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feedback_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
@@ -975,22 +780,9 @@ export type Database = {
         Args: { p_adjustment: number; p_template_id: string }
         Returns: undefined
       }
-      current_app_role: { Args: never; Returns: string }
-      is_admin: { Args: never; Returns: boolean }
-      is_analyst: { Args: never; Returns: boolean }
-      is_service_role: { Args: never; Returns: boolean }
-      verify_rls_all_tables: {
-        Args: never
-        Returns: {
-          policy_count: number
-          rls_enabled: boolean
-          rls_forced: boolean
-          table_name: string
-        }[]
-      }
     }
     Enums: {
-      app_role: "admin" | "analyst" | "viewer" | "demo" | "user"
+      user_role: "admin" | "analyst" | "user" | "viewer" | "demo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1004,29 +796,19 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"]) 
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+  TableName extends DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"]) 
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
-    }
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"]) [TableName] extends { Row: infer R }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"]) [DefaultSchemaTableNameOrOptions] extends { Row: infer R }
       ? R
       : never
     : never
@@ -1035,23 +817,15 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+  TableName extends DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
-    }
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends { Insert: infer I }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
-      }
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends { Insert: infer I }
       ? I
       : never
     : never
@@ -1060,23 +834,15 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+  TableName extends DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
-    }
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends { Update: infer U }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
-      }
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends { Update: infer U }
       ? U
       : never
     : never
@@ -1085,14 +851,10 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+  EnumName extends DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
@@ -1102,14 +864,10 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
@@ -1117,8 +875,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "analyst", "viewer", "demo", "user"],
-    },
+    Enums: {},
   },
 } as const

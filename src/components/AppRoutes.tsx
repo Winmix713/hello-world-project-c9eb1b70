@@ -39,6 +39,7 @@ const IntegrationsPage = React.lazy(() => import('@/pages/admin/IntegrationsPage
 const StatsPage = React.lazy(() => import('@/pages/admin/StatsPage'));
 const ModelStatusDashboard = React.lazy(() => import('@/pages/admin/ModelStatusDashboard'));
 const FeedbackInboxPage = React.lazy(() => import('@/pages/admin/FeedbackInboxPage'));
+const PredictionReviewPage = React.lazy(() => import('@/pages/admin/PredictionReviewPage'));
 
 // Import admin components when needed
 import RoleGate from '@/components/admin/RoleGate';
@@ -55,17 +56,17 @@ const AppRoutes: React.FC = () => {
        <Route path="/unauthorized" element={<AuthGate requireAuth={false}><Unauthorized /></AuthGate>} />
        <Route path="/feature-flags" element={<AuthGate requireAuth={false}><FeatureFlagsDemo /></AuthGate>} />
 
-      {/* Demo routes - accessible to all (read-only for unauthenticated) */}
+       {/* Demo routes - accessible to all (read-only for unauthenticated) */}
       <Route path="/predictions" element={<AuthGate requireAuth={false}><PredictionsView /></AuthGate>} />
       <Route 
-        path="/matches" 
+        path="/matches"
         element={
           <AuthGate requireAuth={false}>
             <Suspense fallback={<PageLoading message="Loading matches..." />}>
               <MatchesPage />
             </Suspense>
           </AuthGate>
-        } 
+        }
       />
       <Route 
         path="/match/:id" 

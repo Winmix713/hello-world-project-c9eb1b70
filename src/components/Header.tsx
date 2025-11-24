@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, Brain, Menu, X, Trophy } from "lucide-react";
+import { Calendar, Brain, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Header = () => {

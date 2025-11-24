@@ -177,7 +177,7 @@ export default function PredictionDisplay({
         </div>
 
         {predictionStatus === 'uncertain' && effectiveBlockedReason && (
-          <Alert className="border-yellow-500/50 bg-yellow-50/10">
+          <Alert variant="warning" className="border-yellow-500/50 bg-yellow-50/10">
             <AlertTriangle className="h-4 w-4 text-yellow-600" />
             <AlertTitle>Konfidencia Downgrade</AlertTitle>
             <AlertDescription>
@@ -268,7 +268,7 @@ export default function PredictionDisplay({
           {expandedEnsemble && (
             <CardContent className="space-y-4">
               {prediction.ensemble_breakdown.conflict_detected && (
-                <Alert className="border-yellow-500/50 bg-yellow-50/10">
+                <Alert variant="warning" className="border-yellow-500/50 bg-yellow-50/10">
                   <AlertTriangle className="h-4 w-4 text-yellow-600" />
                   <AlertTitle>Alacsony Biztonságú Predikció</AlertTitle>
                   <AlertDescription className="text-sm">

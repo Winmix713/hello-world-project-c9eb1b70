@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import ModelPerformanceChart, { PerformancePoint } from "@/components/ModelPerformanceChart";
+import ModelPerformanceChart, { PerformancePoint } from "@/components/analytics/ModelPerformanceChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageLayout from "@/components/layout/PageLayout";
