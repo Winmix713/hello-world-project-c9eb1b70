@@ -32,7 +32,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -57,10 +56,6 @@ interface FeedbackWithDetails {
   responded_at: string | null;
   response: string | null;
   created_at: string;
-  user_profiles?: {
-    email: string;
-    full_name: string | null;
-  } | null;
 }
 
 const FeedbackInboxPanel = () => {
@@ -75,14 +70,11 @@ const FeedbackInboxPanel = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("feedback_inbox")
-        .select(`
-          *,
-          user_profiles(email, full_name)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as FeedbackWithDetails[];
+      return data;
     },
     enabled: !!profile,
   });
