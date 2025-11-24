@@ -5,7 +5,7 @@ import { supabase } from '../../integrations/supabase/client';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
 import QuickActions from './QuickActions';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, TrendingUp } from 'lucide-react';
 
 interface AIChatInterfaceProps {
   onPredictionRequest?: (teams: { home: string; away: string }) => void;
@@ -67,7 +67,10 @@ export const AIChatInterface: React.FC<AIChatInterfaceProps> = ({
             teams: response.analysis?.teams,
             league: response.analysis?.league,
             patterns: response.analysis?.patterns,
-            prediction: response.analysis?.prediction,
+            prediction: response.analysis?.prediction ? {
+              ...response.analysis.prediction,
+              keyFactors: response.analysis.prediction.factors || []
+            } : undefined,
           }
         };
 

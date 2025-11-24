@@ -10,10 +10,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 interface SystemLog {
   id: string;
   component: string;
-  status: "info" | "warning" | "error";
-  message: string | null;
+  log_level: string;
+  message: string;
   details: Record<string, unknown> | null;
-  created_at: string | null;
+  created_at: string;
+  user_id: string | null;
 }
 
 const fetchSystemLogs = async (): Promise<SystemLog[]> => {
@@ -30,24 +31,30 @@ const fetchSystemLogs = async (): Promise<SystemLog[]> => {
   return data || [];
 };
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
+const getStatusIcon = (logLevel: string) => {
+  switch (logLevel) {
+    case "ERROR":
     case "error":
       return <AlertCircle className="h-4 w-4" />;
+    case "WARNING":
     case "warning":
       return <AlertTriangle className="h-4 w-4" />;
+    case "INFO":
     case "info":
     default:
       return <Info className="h-4 w-4" />;
   }
 };
 
-const getStatusBadgeVariant = (status: string) => {
-  switch (status) {
+const getStatusBadgeVariant = (logLevel: string) => {
+  switch (logLevel) {
+    case "ERROR":
     case "error":
       return "destructive";
+    case "WARNING":
     case "warning":
       return "outline";
+    case "INFO":
     case "info":
     default:
       return "secondary";
