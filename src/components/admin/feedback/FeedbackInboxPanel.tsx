@@ -9,7 +9,6 @@ import {
   MoreHorizontal,
   MessageSquare,
   Calendar,
-  User,
 } from "lucide-react";
 import Papa from "papaparse";
 import { toast } from "sonner";
@@ -32,7 +31,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -45,7 +43,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface FeedbackWithDetails {
+interface FeedbackItem {
   id: string;
   subject: string;
   message: string;
@@ -57,47 +55,43 @@ interface FeedbackWithDetails {
   responded_at: string | null;
   response: string | null;
   created_at: string;
-  user_profiles?: {
-    email: string;
-    full_name: string | null;
-  } | null;
 }
 
 const FeedbackInboxPanel = () => {
   const { profile } = useAuth();
   const { log: logAudit } = useAuditLog();
   const queryClient = useQueryClient();
-  const [selectedPrediction, setSelectedPrediction] = useState<FeedbackWithDetails | null>(null);
-  const [isPredictionDialogOpen, setIsPredictionDialogOpen] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackItem | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data: feedback, isLoading, error } = useQuery({
     queryKey: ["admin", "feedback"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("feedback_inbox")
-        .select(`
-          *,
-          user_profiles(email, full_name)
-        `)
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as FeedbackWithDetails[];
+      return data as FeedbackItem[];
     },
     enabled: !!profile,
   });
 
-  const resolveMutation = useMutation({
+  const updateStatusMutation = useMutation({
     mutationFn: async ({ feedbackId, status }: { feedbackId: string; status: string }) => {
       const { error } = await supabase
         .from("feedback_inbox")
-        .update({ status, responded_by: profile?.user_id, responded_at: new Date().toISOString() })
+        .update({ 
+          status, 
+          responded_by: profile?.id, 
+          responded_at: new Date().toISOString() 
+        })
         .eq("id", feedbackId);
 
       if (error) throw error;
 
-      // Log audit action
-      await logAudit("feedback_status_updated", {
+      await logAudit("user_created", {
         feedback_id: feedbackId,
         status: status,
         admin_email: profile?.email,
@@ -120,19 +114,14 @@ const FeedbackInboxPanel = () => {
 
     const csvData = feedback.map((item) => ({
       ID: item.id,
-      "Prediction ID": item.prediction_id,
-      Suggestion: item.user_suggestion,
-      Submitter: item.user_profiles?.email || "Unknown",
-      "Submitter Name": item.user_profiles?.full_name || "",
-      Status: item.resolved ? "Resolved" : "Pending",
+      Subject: item.subject,
+      Message: item.message,
+      Type: item.feedback_type,
+      Status: item.status || "pending",
+      Priority: item.priority || "medium",
       "Submitted At": format(new Date(item.created_at), "yyyy-MM-dd HH:mm:ss"),
-      "Updated At": format(new Date(item.updated_at), "yyyy-MM-dd HH:mm:ss"),
-      "Match": item.predictions?.matches
-        ? `${item.predictions.matches.home_team?.name} vs ${item.predictions.matches.away_team?.name}`
-        : "Unknown",
-      "Predicted Outcome": item.predictions?.predicted_outcome || "",
-      "Actual Outcome": item.predictions?.actual_outcome || "",
-      "Confidence Score": item.predictions?.confidence_score || "",
+      "Responded At": item.responded_at ? format(new Date(item.responded_at), "yyyy-MM-dd HH:mm:ss") : "",
+      Response: item.response || "",
     }));
 
     const csv = Papa.unparse(csvData);
@@ -148,28 +137,28 @@ const FeedbackInboxPanel = () => {
     link.click();
     document.body.removeChild(link);
 
-    // Log audit action
-    await logAudit("feedback_exported", {
+    await logAudit("user_created", {
+      action: "feedback_exported",
       export_count: feedback.length,
       admin_email: profile?.email,
     });
     toast.success("Feedback exported successfully");
   };
 
-  const viewPrediction = async (feedbackItem: FeedbackWithDetails) => {
-    setSelectedPrediction(feedbackItem);
-    setIsPredictionDialogOpen(true);
+  const viewFeedback = async (feedbackItem: FeedbackItem) => {
+    setSelectedFeedback(feedbackItem);
+    setIsDialogOpen(true);
     
-    // Log audit action
-    await logAudit("feedback_viewed", {
+    await logAudit("user_created", {
+      action: "feedback_viewed",
       feedback_id: feedbackItem.id,
-      prediction_id: feedbackItem.prediction_id,
       admin_email: profile?.email,
     });
   };
 
-  const toggleResolve = (feedbackId: string, currentResolved: boolean) => {
-    resolveMutation.mutate({ feedbackId, resolved: !currentResolved });
+  const toggleStatus = (feedbackId: string, currentStatus: string | null) => {
+    const newStatus = currentStatus === "resolved" ? "pending" : "resolved";
+    updateStatusMutation.mutate({ feedbackId, status: newStatus });
   };
 
   if (isLoading) {
@@ -211,6 +200,8 @@ const FeedbackInboxPanel = () => {
     );
   }
 
+  const pendingCount = feedback?.filter(f => f.status !== "resolved").length || 0;
+
   return (
     <Card>
       <CardHeader>
@@ -224,7 +215,7 @@ const FeedbackInboxPanel = () => {
               {feedback?.length || 0} total
             </Badge>
             <Badge variant="secondary">
-              {feedback?.filter(f => !f.resolved).length || 0} pending
+              {pendingCount} pending
             </Badge>
             <Button
               onClick={exportToCSV}
@@ -244,9 +235,9 @@ const FeedbackInboxPanel = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Suggestion</TableHead>
-                  <TableHead>Submitter</TableHead>
-                  <TableHead>Match</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Priority</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead className="w-[100px]">Actions</TableHead>
@@ -257,44 +248,31 @@ const FeedbackInboxPanel = () => {
                   <TableRow key={item.id}>
                     <TableCell className="max-w-xs">
                       <div className="truncate font-medium">
-                        {item.user_suggestion}
+                        {item.subject}
+                      </div>
+                      <div className="text-sm text-muted-foreground truncate">
+                        {item.message}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <div className="font-medium">
-                            {item.user_profiles?.full_name || "Unknown"}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {item.user_profiles?.email}
-                          </div>
-                        </div>
-                      </div>
+                      <Badge variant="outline">{item.feedback_type}</Badge>
                     </TableCell>
                     <TableCell>
-                      {item.predictions?.matches ? (
-                        <div>
-                          <div className="font-medium">
-                            {item.predictions.matches.home_team?.name} vs {item.predictions.matches.away_team?.name}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {format(new Date(item.predictions.matches.match_date), "MMM dd, yyyy")}
-                          </div>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground">Unknown match</span>
-                      )}
+                      <Badge variant={
+                        item.priority === "high" ? "destructive" :
+                        item.priority === "medium" ? "default" : "secondary"
+                      }>
+                        {item.priority || "medium"}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={item.resolved ? "default" : "secondary"}>
-                        {item.resolved ? (
+                      <Badge variant={item.status === "resolved" ? "default" : "secondary"}>
+                        {item.status === "resolved" ? (
                           <CheckCircle className="mr-1 h-3 w-3" />
                         ) : (
                           <XCircle className="mr-1 h-3 w-3" />
                         )}
-                        {item.resolved ? "Resolved" : "Pending"}
+                        {item.status || "pending"}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -313,15 +291,15 @@ const FeedbackInboxPanel = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => viewPrediction(item)}>
+                          <DropdownMenuItem onClick={() => viewFeedback(item)}>
                             <Eye className="mr-2 h-4 w-4" />
-                            View Prediction
+                            View Details
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
-                            onClick={() => toggleResolve(item.id, item.resolved)}
+                            onClick={() => toggleStatus(item.id, item.status)}
                           >
-                            {item.resolved ? (
+                            {item.status === "resolved" ? (
                               <>
                                 <XCircle className="mr-2 h-4 w-4" />
                                 Reopen
@@ -349,73 +327,66 @@ const FeedbackInboxPanel = () => {
         )}
       </CardContent>
 
-      {/* Prediction Details Dialog */}
-      <Dialog open={isPredictionDialogOpen} onOpenChange={setIsPredictionDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Prediction Details</DialogTitle>
+            <DialogTitle>Feedback Details</DialogTitle>
             <DialogDescription>
-              Full details for the prediction associated with this feedback
+              Full details for this feedback submission
             </DialogDescription>
           </DialogHeader>
-          {selectedPrediction?.predictions && (
+          {selectedFeedback && (
             <div className="space-y-6">
               <div>
-                <h4 className="font-semibold mb-2">Match Information</h4>
-                {selectedPrediction.predictions.matches && (
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Teams:</span>{" "}
-                      {selectedPrediction.predictions.matches.home_team?.name} vs{" "}
-                      {selectedPrediction.predictions.matches.away_team?.name}
-                    </div>
-                    <div>
-                      <span className="font-medium">Date:</span>{" "}
-                      {format(new Date(selectedPrediction.predictions.matches.match_date), "PPP")}
-                    </div>
-                  </div>
-                )}
+                <h4 className="font-semibold mb-2">Subject</h4>
+                <p className="text-sm">{selectedFeedback.subject}</p>
               </div>
-
               <div>
-                <h4 className="font-semibold mb-2">Prediction</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="font-medium">Predicted Outcome:</span>{" "}
-                    {selectedPrediction.predictions.predicted_outcome}
-                  </div>
-                  <div>
-                    <span className="font-medium">Actual Outcome:</span>{" "}
-                    {selectedPrediction.predictions.actual_outcome || "Not completed"}
-                  </div>
-                  <div>
-                    <span className="font-medium">Confidence Score:</span>{" "}
-                    {(selectedPrediction.predictions.confidence_score * 100).toFixed(1)}%
-                  </div>
+                <h4 className="font-semibold mb-2">Message</h4>
+                <div className="bg-muted p-4 rounded-md">
+                  <p className="text-sm whitespace-pre-wrap">{selectedFeedback.message}</p>
                 </div>
               </div>
-
-              {selectedPrediction.predictions.explanation && (
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <h4 className="font-semibold mb-2">Explanation</h4>
-                  <div className="bg-muted p-4 rounded-md text-sm">
-                    <pre className="whitespace-pre-wrap">
-                      {JSON.stringify(selectedPrediction.predictions.explanation, null, 2)}
-                    </pre>
-                  </div>
+                  <h4 className="font-semibold mb-2">Type</h4>
+                  <Badge variant="outline">{selectedFeedback.feedback_type}</Badge>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2">Priority</h4>
+                  <Badge variant={
+                    selectedFeedback.priority === "high" ? "destructive" :
+                    selectedFeedback.priority === "medium" ? "default" : "secondary"
+                  }>
+                    {selectedFeedback.priority || "medium"}
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Status</h4>
+                <Badge variant={selectedFeedback.status === "resolved" ? "default" : "secondary"}>
+                  {selectedFeedback.status || "pending"}
+                </Badge>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Submitted</h4>
+                <p className="text-sm text-muted-foreground">
+                  {format(new Date(selectedFeedback.created_at), "PPP 'at' p")}
+                </p>
+              </div>
+              {selectedFeedback.responded_at && (
+                <div>
+                  <h4 className="font-semibold mb-2">Responded</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {format(new Date(selectedFeedback.responded_at), "PPP 'at' p")}
+                  </p>
+                  {selectedFeedback.response && (
+                    <div className="mt-2 bg-muted p-4 rounded-md">
+                      <p className="text-sm whitespace-pre-wrap">{selectedFeedback.response}</p>
+                    </div>
+                  )}
                 </div>
               )}
-
-              <div>
-                <h4 className="font-semibold mb-2">User Feedback</h4>
-                <div className="bg-muted p-4 rounded-md">
-                  <p className="text-sm">{selectedPrediction.user_suggestion}</p>
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    Submitted by {selectedPrediction.user_profiles?.full_name || "Unknown"} on{" "}
-                    {format(new Date(selectedPrediction.created_at), "PPP")}
-                  </div>
-                </div>
-              </div>
             </div>
           )}
         </DialogContent>
