@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, RefreshCw, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ interface SystemLog {
   component: string;
   log_level: string;
   message: string;
-  details: Record<string, unknown> | null;
+  details: Json | null;
   created_at: string;
   user_id: string | null;
 }
@@ -169,9 +170,9 @@ export function SystemLogTable() {
               </TableHeader>
               <TableBody>
                 {logs.map((log) => (
-                  <TableRow
+                <TableRow
                     key={log.id}
-                    className={log.status === "error" ? "bg-destructive/5" : ""}
+                    className={log.log_level === "ERROR" ? "bg-destructive/5" : ""}
                   >
                     <TableCell className="text-sm text-muted-foreground">
                       {formatTimestamp(log.created_at)}
@@ -181,16 +182,16 @@ export function SystemLogTable() {
                     </TableCell>
                     <TableCell>
                       <Badge
-                        variant={getStatusBadgeVariant(log.status)}
+                        variant={getStatusBadgeVariant(log.log_level)}
                         className={
-                          log.status === "warning"
+                          log.log_level === "WARNING"
                             ? "border-amber-500 text-amber-700"
                             : ""
                         }
                       >
                         <span className="flex items-center gap-1">
-                          {getStatusIcon(log.status)}
-                          {log.status}
+                          {getStatusIcon(log.log_level)}
+                          {log.log_level}
                         </span>
                       </Badge>
                     </TableCell>

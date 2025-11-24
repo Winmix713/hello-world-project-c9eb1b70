@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tantml:query';
 import type { ChatMessage, AIChatResponse } from '../../types/ai-chat';
 import { supabase } from '../../integrations/supabase/client';
 import MessageBubble from './MessageBubble';
 import TypingIndicator from './TypingIndicator';
 import QuickActions from './QuickActions';
-import { AlertCircle, TrendingUp } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface AIChatInterfaceProps {
   onPredictionRequest?: (teams: { home: string; away: string }) => void;
