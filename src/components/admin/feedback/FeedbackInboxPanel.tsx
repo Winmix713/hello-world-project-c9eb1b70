@@ -33,7 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+const FeedbackInboxPanel = () => {
   const { profile } = useAuth();
   const { log: logAudit } = useAuditLog();
   const queryClient = useQueryClient();
@@ -156,7 +156,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-destructive">Error loading feedback: {error.message}</div>
+          <div className="text-destructive">Error loading feedback: {(error as Error).message}</div>
         </CardContent>
       </Card>
     );
