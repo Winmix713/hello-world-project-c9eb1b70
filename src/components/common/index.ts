@@ -1,3 +1,3 @@
 export { HighValuePatternBadge, type HighValuePattern } from './HighValuePatternBadge';
-export { EmptyState } from './EmptyState';
-export { ErrorState } from './ErrorState';
+export { default as EmptyState } from './EmptyState';
+export { default as ErrorState } from './ErrorState';
