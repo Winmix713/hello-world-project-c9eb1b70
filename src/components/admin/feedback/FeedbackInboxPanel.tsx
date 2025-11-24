@@ -33,21 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface FeedbackItem {
-  id: string;
-  subject: string;
-  message: string;
-  feedback_type: string;
-  status: string | null;
-  priority: string | null;
-  user_id: string | null;
-  responded_by: string | null;
-  responded_at: string | null;
-  response: string | null;
-  created_at: string;
-}
-
-const FeedbackInboxPanel = () => {
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
   const { profile } = useAuth();
   const { log: logAudit } = useAuditLog();
   const queryClient = useQueryClient();
@@ -79,7 +65,7 @@ const FeedbackInboxPanel = () => {
 
       if (error) throw error;
 
-      await logAudit("settings_changed", {
+      await logAudit("user_created", {
         action: "feedback_status_changed",
         feedback_id: feedbackId,
         new_status: status,
@@ -125,7 +111,7 @@ const FeedbackInboxPanel = () => {
     link.click();
     document.body.removeChild(link);
 
-    await logAudit("settings_changed", {
+    await logAudit("user_created", {
       action: "feedback_exported",
       export_count: feedback.length,
       admin_email: profile?.email,
