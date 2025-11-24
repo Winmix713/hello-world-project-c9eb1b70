@@ -47,27 +47,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface FeedbackWithDetails {
   id: string;
-  prediction_id: string;
-  user_suggestion: string;
-  submitted_by: string | null;
-  metadata: Record<string, unknown> | null;
-  resolved: boolean;
+  subject: string;
+  message: string;
+  feedback_type: string;
+  status: string | null;
+  priority: string | null;
+  user_id: string | null;
+  responded_by: string | null;
+  responded_at: string | null;
+  response: string | null;
   created_at: string;
-  updated_at: string;
   user_profiles?: {
     email: string;
     full_name: string | null;
-  } | null;
-  predictions?: {
-    confidence_score: number;
-    predicted_outcome: string;
-    actual_outcome: string | null;
-    explanation: Record<string, unknown> | null;
-    matches?: {
-      home_team: { name: string } | null;
-      away_team: { name: string } | null;
-      match_date: string;
-    } | null;
   } | null;
 }
 
@@ -82,21 +74,10 @@ const FeedbackInboxPanel = () => {
     queryKey: ["admin", "feedback"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("feedback")
+        .from("feedback_inbox")
         .select(`
           *,
-          user_profiles(email, full_name),
-          predictions(
-            confidence_score,
-            predicted_outcome,
-            actual_outcome,
-            explanation,
-            matches(
-              home_team:teams(name),
-              away_team:teams(name),
-              match_date
-            )
-          )
+          user_profiles(email, full_name)
         `)
         .order("created_at", { ascending: false });
 
@@ -107,24 +88,24 @@ const FeedbackInboxPanel = () => {
   });
 
   const resolveMutation = useMutation({
-    mutationFn: async ({ feedbackId, resolved }: { feedbackId: string; resolved: boolean }) => {
+    mutationFn: async ({ feedbackId, status }: { feedbackId: string; status: string }) => {
       const { error } = await supabase
-        .from("feedback")
-        .update({ resolved })
+        .from("feedback_inbox")
+        .update({ status, responded_by: profile?.user_id, responded_at: new Date().toISOString() })
         .eq("id", feedbackId);
 
       if (error) throw error;
 
       // Log audit action
-      await logAudit(resolved ? "feedback_resolved" : "feedback_reopened", {
+      await logAudit("feedback_status_updated", {
         feedback_id: feedbackId,
-        resolved: resolved,
+        status: status,
         admin_email: profile?.email,
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "feedback"] });
-      toast.success(`Feedback ${resolveMutation.variables?.resolved ? "resolved" : "reopened"} successfully`);
+      toast.success("Feedback status updated successfully");
     },
     onError: (error) => {
       toast.error(`Failed to update feedback: ${error.message}`);

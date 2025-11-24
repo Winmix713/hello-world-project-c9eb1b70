@@ -8,7 +8,6 @@ import Login from '@/pages/Auth/Login';
 import Signup from '@/pages/Auth/Signup';
 import NewPredictions from '@/pages/NewPredictions';
 import Teams from '@/pages/Teams';
-import Matches from '@/pages/Matches';
 import Leagues from '@/pages/Leagues';
 import Dashboard from '@/pages/Dashboard';
 import PredictionsView from '@/pages/PredictionsView';
@@ -22,8 +21,6 @@ import FeatureFlagsDemo from '@/pages/FeatureFlagsDemo';
 const TeamDetail = React.lazy(() => import('@/pages/TeamDetail'));
 const CrossLeague = React.lazy(() => import('@/pages/CrossLeague'));
 const Analytics = React.lazy(() => import('@/pages/Analytics'));
-const Models = React.lazy(() => import('@/pages/Models'));
-const Monitoring = React.lazy(() => import('@/pages/Monitoring'));
 const EnvVariables = React.lazy(() => import('@/pages/EnvVariables'));
 const MatchesPage = React.lazy(() => import('@/pages/MatchesPage'));
 const MatchDetail = React.lazy(() => import('@/pages/MatchDetail'));
@@ -42,7 +39,6 @@ const IntegrationsPage = React.lazy(() => import('@/pages/admin/IntegrationsPage
 const StatsPage = React.lazy(() => import('@/pages/admin/StatsPage'));
 const ModelStatusDashboard = React.lazy(() => import('@/pages/admin/ModelStatusDashboard'));
 const FeedbackInboxPage = React.lazy(() => import('@/pages/admin/FeedbackInboxPage'));
-const PredictionReviewPage = React.lazy(() => import('@/pages/admin/PredictionReviewPage'));
 
 // Import admin components when needed
 import RoleGate from '@/components/admin/RoleGate';
@@ -59,9 +55,18 @@ const AppRoutes: React.FC = () => {
        <Route path="/unauthorized" element={<AuthGate requireAuth={false}><Unauthorized /></AuthGate>} />
        <Route path="/feature-flags" element={<AuthGate requireAuth={false}><FeatureFlagsDemo /></AuthGate>} />
 
-       {/* Demo routes - accessible to all (read-only for unauthenticated) */}
+      {/* Demo routes - accessible to all (read-only for unauthenticated) */}
       <Route path="/predictions" element={<AuthGate requireAuth={false}><PredictionsView /></AuthGate>} />
-      <Route path="/matches" element={<AuthGate requireAuth={false}><Matches /></AuthGate>} />
+      <Route 
+        path="/matches" 
+        element={
+          <AuthGate requireAuth={false}>
+            <Suspense fallback={<PageLoading message="Loading matches..." />}>
+              <MatchesPage />
+            </Suspense>
+          </AuthGate>
+        } 
+      />
       <Route 
         path="/match/:id" 
         element={
@@ -113,7 +118,7 @@ const AppRoutes: React.FC = () => {
           element={
             <AuthGate>
               <Suspense fallback={<PageLoading message="Loading models..." />}>
-                <Models />
+                <ModelsPage />
               </Suspense>
             </AuthGate>
           } 
@@ -152,7 +157,7 @@ const AppRoutes: React.FC = () => {
             element={
               <AuthGate>
                 <Suspense fallback={<PageLoading message="Loading monitoring..." />}>
-                  <Monitoring />
+                  <MonitoringPage />
                 </Suspense>
               </AuthGate>
             } 
