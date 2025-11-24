@@ -1,12 +1,9 @@
-import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import {
   Download,
   MoreHorizontal,
   MessageSquare,
   Calendar,
-  User,
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
@@ -74,14 +71,15 @@ const FeedbackInboxPanel = () => {
         .from("feedback_inbox")
         .update({ 
           status, 
-          responded_by: profile?.user_id, 
+          responded_by: profile?.id, 
           responded_at: new Date().toISOString() 
         })
         .eq("id", feedbackId);
 
       if (error) throw error;
 
-      await logAudit("feedback_status_changed", {
+      await logAudit("admin_action", {
+        action: "feedback_status_changed",
         feedback_id: feedbackId,
         new_status: status,
         admin_email: profile?.email,
