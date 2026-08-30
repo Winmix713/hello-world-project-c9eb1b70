@@ -14,6 +14,8 @@ import { EvalWindowTable } from '../components/winmix/EvalWindowTable';
 import { JointInvariantPanel } from '../components/winmix/JointInvariantPanel';
 import { CoreEvidenceSuitePanel } from '../components/winmix/CoreEvidenceSuitePanel';
 import { CoreTierSuitePanel } from '../components/winmix/CoreTierSuitePanel';
+import { CoreCanonicalSuitePanel } from '../components/winmix/CoreCanonicalSuitePanel';
+
 import { MarketCalibrationPanel } from '../components/winmix/MarketCalibrationPanel';
 import { EmptyRow, Table, TableScroll, Td, Th, Tr } from '../components/winmix/DataTable';
 import { MarketFeedbackPanel } from '../components/winmix/MarketFeedbackPanel';
