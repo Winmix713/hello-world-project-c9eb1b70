@@ -161,6 +161,10 @@ export function PipelineAudit() {
       {/* CORE TIERING — the quadrant is now a selection tier, not a hard entry
            gate. This suite pins the three properties that make that safe. */}
       <CoreTierSuitePanel />
+      {/* CORE CANONICALISATION — the hard gates run before duplicate merging;
+           these cases pin that order and the raw/eligible/placed populations. */}
+      <CoreCanonicalSuitePanel />
+
 
       {/* --- Windows ------------------------------------------------------- */}
       <SectionHeading icon={BarChart3} hint={`${windows.length} lezárt ablak`}>
