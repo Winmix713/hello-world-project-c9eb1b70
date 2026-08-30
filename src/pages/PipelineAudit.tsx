@@ -14,6 +14,8 @@ import { EvalWindowTable } from '../components/winmix/EvalWindowTable';
 import { JointInvariantPanel } from '../components/winmix/JointInvariantPanel';
 import { CoreEvidenceSuitePanel } from '../components/winmix/CoreEvidenceSuitePanel';
 import { CoreTierSuitePanel } from '../components/winmix/CoreTierSuitePanel';
+import { CoreCanonicalSuitePanel } from '../components/winmix/CoreCanonicalSuitePanel';
+
 import { MarketCalibrationPanel } from '../components/winmix/MarketCalibrationPanel';
 import { EmptyRow, Table, TableScroll, Td, Th, Tr } from '../components/winmix/DataTable';
 import { MarketFeedbackPanel } from '../components/winmix/MarketFeedbackPanel';
@@ -161,6 +163,10 @@ export function PipelineAudit() {
       {/* CORE TIERING — the quadrant is now a selection tier, not a hard entry
            gate. This suite pins the three properties that make that safe. */}
       <CoreTierSuitePanel />
+      {/* CORE CANONICALISATION — the hard gates run before duplicate merging;
+           these cases pin that order and the raw/eligible/placed populations. */}
+      <CoreCanonicalSuitePanel />
+
 
       {/* --- Windows ------------------------------------------------------- */}
       <SectionHeading icon={BarChart3} hint={`${windows.length} lezárt ablak`}>
