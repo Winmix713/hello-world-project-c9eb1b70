@@ -240,9 +240,17 @@ export function runCoreCanonicalSuite(): CoreCanonicalSuiteResult {
 
   /* --- C. GATE-FIRST: a gated record must not suppress a passing one ---- */
   {
-    // The gate-failing record would win the canonical comparator on H2H rate,
-    // so a canonical-first order would delete the eligible sibling.
-    const gated = makeRecord({ id: 'c-gated', fixtureId: 'c', ...FLAT, hitRate: 0.9 });
+    // The gate-failing record would win the canonical comparator (primary tier,
+    // higher H2H rate), so a canonical-first order would delete the eligible
+    // sibling. Its hard-gate failure is the disproved evidence band.
+    const gated = makeRecord({
+      id: 'c-gated',
+      fixtureId: 'c',
+      ...ACTIONABLE,
+      hitRate: 0.9,
+      evidence: 'excluded'
+    });
+
     const passing = makeRecord({ id: 'c-ok', fixtureId: 'c', ...ACTIONABLE });
     const raw = [gated, passing];
 
