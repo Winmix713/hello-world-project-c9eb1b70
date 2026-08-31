@@ -38,6 +38,9 @@ import {
 '../components/winmix/PanelState';
 import { RoundBuilder } from '../components/winmix/RoundBuilder';
 import { SlipPanel } from '../components/winmix/SlipPanel';
+import { PatternConfidenceSummary } from '../components/winmix/PatternConfidenceSummary';
+import { EmptyCoreReasons } from '../components/winmix/EmptyCoreReasons';
+import { MobileSlipBar } from '../components/winmix/MobileSlipBar';
 
 const INTRO =
 'Állítsd össze a hét 8 angol és 8 spanyol mérkőzését, majd futtasd az ' +
@@ -358,8 +361,11 @@ export function FixturePredictor() {
             profileVeto={activeSpec.profileVeto} />
           
 
-          {/* A kártyánkénti szerkesztő megmarad, de nem ez a napi útvonal:
-               alapból összecsukva, és csak egyedi módban nyílik ki magától. */}
+          <PatternConfidenceSummary patterns={allPatterns} />
+
+          <EmptyCoreReasons draft={draft} />
+
+
           <Collapsible
             key={strategy.mode}
             title="Haladó / egyedi core beállítás"
@@ -398,6 +404,14 @@ export function FixturePredictor() {
           </div> :
         null}
       </div>
+
+      {draft ?
+      <MobileSlipBar
+        combinedProb={combined}
+        filled={filledSlots}
+        total={draft.slots.length}
+        invalid={duplicates.length > 0} /> :
+      null}
     </div>);
 
 }
