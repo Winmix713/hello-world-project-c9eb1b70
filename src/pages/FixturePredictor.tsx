@@ -361,8 +361,11 @@ export function FixturePredictor() {
             profileVeto={activeSpec.profileVeto} />
           
 
-          {/* A kártyánkénti szerkesztő megmarad, de nem ez a napi útvonal:
-               alapból összecsukva, és csak egyedi módban nyílik ki magától. */}
+          <PatternConfidenceSummary patterns={allPatterns} />
+
+          <EmptyCoreReasons draft={draft} />
+
+
           <Collapsible
             key={strategy.mode}
             title="Haladó / egyedi core beállítás"
@@ -401,6 +404,14 @@ export function FixturePredictor() {
           </div> :
         null}
       </div>
+
+      {draft ?
+      <MobileSlipBar
+        combinedProb={combined}
+        filled={filledSlots}
+        total={draft.slots.length}
+        invalid={duplicates.length > 0} /> :
+      null}
     </div>);
 
 }
