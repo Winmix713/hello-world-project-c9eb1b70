@@ -38,6 +38,9 @@ import {
 '../components/winmix/PanelState';
 import { RoundBuilder } from '../components/winmix/RoundBuilder';
 import { SlipPanel } from '../components/winmix/SlipPanel';
+import { PatternConfidenceSummary } from '../components/winmix/PatternConfidenceSummary';
+import { EmptyCoreReasons } from '../components/winmix/EmptyCoreReasons';
+import { MobileSlipBar } from '../components/winmix/MobileSlipBar';
 
 const INTRO =
 'Állítsd össze a hét 8 angol és 8 spanyol mérkőzését, majd futtasd az ' +
